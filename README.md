@@ -79,9 +79,10 @@ Streamlit is used to create an interactive user interface, allowing users to inp
 - Ensure your API keys are correct and have sufficient quota.
 - Check the Docker logs for any error messages.
 - Verify that the required Python packages are installed correctly.
+- Try modifying the behavior of the rate limiting logic (in llm_integration.py).
 
 ### License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the license file.
 
 ### Acknowledgements
 - OpenAI
