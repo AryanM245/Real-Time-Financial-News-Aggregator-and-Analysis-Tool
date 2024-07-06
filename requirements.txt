@@ -9,3 +9,4 @@ requests
 mpmath==1.3.0
 streamlit
 openai
+tenacity
