@@ -9,13 +9,11 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
-
 def fetch_news():
     url = f"https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey={ALPHA_VANTAGE_API_KEY}"
     response = requests.get(url)
     data = response.json()
     return data.get('feed', [])
-
 
 def process_news(news_data):
     processed_news = []
@@ -33,9 +31,6 @@ def process_news(news_data):
         })
     return processed_news
 
-news_data = fetch_news()
-processed_news = process_news(news_data)
-
-    # Use processed_news here for further processing or display
-    # Example: Print the list of news dictionaries
-    
+def fetch_and_process_news():
+    news_data = fetch_news()
+    return process_news(news_data)
