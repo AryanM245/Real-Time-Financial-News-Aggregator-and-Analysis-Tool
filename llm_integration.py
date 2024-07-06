@@ -3,7 +3,7 @@ from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
 import os
 from dotenv import load_dotenv
-import time
+import asyncio
 import openai
 
 load_dotenv()
@@ -18,21 +18,21 @@ class RateLimitedOpenAI(OpenAI):
         self.max_retries = 5
         self.retry_delay = 60  # Delay in seconds before retrying after a rate limit error
 
-    def generate(self, prompts, stop=None):
-        current_time = time.time()
+    async def agenerate(self, prompts, stop=None):
+        current_time = asyncio.get_event_loop().time()
         time_since_last_request = current_time - self.last_request_time
         if time_since_last_request < self.request_interval:
-            time.sleep(self.request_interval - time_since_last_request)
+            await asyncio.sleep(self.request_interval - time_since_last_request)
         
         for retry in range(self.max_retries):
             try:
-                result = super().generate(prompts, stop)
-                self.last_request_time = time.time()
+                result = await super().agenerate(prompts, stop)
+                self.last_request_time = asyncio.get_event_loop().time()
                 return result
             except openai.error.RateLimitError:
                 if retry < self.max_retries - 1:
                     print(f"Rate limit exceeded. Waiting for {self.retry_delay} seconds before retrying.")
-                    time.sleep(self.retry_delay)
+                    await asyncio.sleep(self.retry_delay)
                 else:
                     raise
 
@@ -45,5 +45,5 @@ prompt = PromptTemplate(
 
 chain = LLMChain(llm=llm, prompt=prompt)
 
-def analyze_news(news, query):
-    return chain.run(news=news, query=query)
+async def analyze_news(news, query):
+    return await chain.arun(news=news, query=query)
